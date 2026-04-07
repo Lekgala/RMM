@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TJ RMM | Support Queue</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --page-bg: #f4f8fc;
+            --surface: #ffffff;
+            --line: #d9e5f2;
+            --text-main: #16324f;
+            --text-muted: #6f86a0;
+            --accent: #1c88ff;
+            --accent-deep: #1466d6;
+            --accent-soft: #ebf4ff;
+            --success-soft: #eafaf2;
+            --warning-soft: #fff8e7;
+            --danger-soft: #fff0f0;
+            --shadow: 0 18px 45px rgba(25, 73, 129, 0.08);
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-main);
+            font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(28, 136, 255, 0.14), transparent 28%),
+                linear-gradient(180deg, #fafdff 0%, #f2f7fc 50%, #edf4fb 100%);
+        }
+        .topbar,
+        .hero-panel,
+        .request-card,
+        .alert {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+        }
+        .topbar {
+            margin: 1.5rem 1.5rem 0;
+            padding: 1.1rem 1.4rem;
+        }
+        .brand-badge {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #1c88ff, #5ab3ff);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 14px 28px rgba(28, 136, 255, 0.28);
+        }
+        .hero-panel {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f6fbff 100%);
+        }
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .small-copy { color: var(--text-muted); }
+        .scope-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 999px;
+            background: #eef6ff;
+            color: #145ab8;
+            border: 1px solid #cfe2ff;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 0.85rem;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: #f8fbff;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .filter-chip.active {
+            background: var(--accent-soft);
+            color: var(--accent-deep);
+            border-color: #b9d8ff;
+        }
+        .request-card {
+            padding: 1.25rem;
+            height: 100%;
+        }
+        .ticket-link {
+            color: var(--text-main);
+            text-decoration: none;
+        }
+        .ticket-link:hover { color: var(--accent-deep); }
+        .status-pill,
+        .priority-pill,
+        .owner-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.3rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        .status-open { background: #fff0f0; color: #d1495b; }
+        .status-in_progress { background: #fff8e7; color: #9c7400; }
+        .status-closed { background: #eafaf2; color: #0f8a5d; }
+        .priority-low { background: #eef6ff; color: #1466d6; }
+        .priority-normal { background: #ebf4ff; color: #135fc9; }
+        .priority-high { background: #fff8e7; color: #9c7400; }
+        .priority-urgent { background: #fff0f0; color: #d1495b; }
+        .owner-pill { background: #f3f6fa; color: #54657a; }
+        .form-control,
+        .form-select {
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            background: #fbfdff;
+            color: var(--text-main);
+            box-shadow: none;
+        }
+        .form-control:focus,
+        .form-select:focus {
+            border-color: rgba(28, 136, 255, 0.45);
+            box-shadow: 0 0 0 0.2rem rgba(28, 136, 255, 0.12);
+        }
+        .btn {
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1c88ff, #1568db) !important;
+            border: none !important;
+            box-shadow: 0 14px 28px rgba(28, 136, 255, 0.22);
+        }
+        .btn-outline-secondary {
+            color: var(--text-muted) !important;
+            border: 1px solid var(--line) !important;
+            background: #f8fbff !important;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            background: linear-gradient(180deg, #ffffff, #f9fcff);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar d-flex justify-content-between align-items-center gap-3 flex-wrap">
+        <div class="d-flex align-items-center gap-3">
+            <div class="brand-badge">TJ</div>
+            <div>
+                <div class="metric-label" style="color: var(--accent-deep);">Support Queue</div>
+                <div class="fw-semibold fs-5">Technician Ticket Portal</div>
+            </div>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm">Back to Dashboard</a>
+    </div>
+
+    <div class="container-fluid py-4">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-warning mb-3">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="hero-panel mb-4">
+            <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+                <div>
+                    <div class="metric-label mb-2">Ticket Operations</div>
+                    <h1 class="h3 mb-2">Review client tickets, update status, and publish resolutions.</h1>
+                    <p class="mb-0 small-copy">
+                        {% if staff_client_access %}
+                        You're working inside {{ staff_client_access.client.name }} only. Any resolution you publish here is visible immediately to that client team.
+                        {% else %}
+                        When you add a resolution here, the client can see it immediately from their portal.
+                        {% endif %}
+                    </p>
+                </div>
+                {% if staff_client_access %}
+                <div class="scope-banner">Scoped to {{ staff_client_access.client.name }}</div>
+                {% else %}
+                <div class="status-pill status-in_progress">{{ total_requests }} active</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <a href="?request_status=open" class="filter-chip {% if request_status == 'open' %}active{% endif %}">Open</a>
+            <a href="?request_status=resolved" class="filter-chip {% if request_status == 'resolved' %}active{% endif %}">Resolved</a>
+            <a href="?request_status=all" class="filter-chip {% if request_status == 'all' %}active{% endif %}">All</a>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <a href="?request_status={{ request_status }}&ownership=all" class="filter-chip {% if ownership == 'all' %}active{% endif %}">All Owners</a>
+            <a href="?request_status={{ request_status }}&ownership=mine" class="filter-chip {% if ownership == 'mine' %}active{% endif %}">My Queue ({{ my_requests }})</a>
+            <a href="?request_status={{ request_status }}&ownership=unassigned" class="filter-chip {% if ownership == 'unassigned' %}active{% endif %}">Unassigned ({{ unassigned_requests }})</a>
+        </div>
+
+        <div class="row g-4">
+            {% for item in service_requests %}
+            <div class="col-12">
+                <div class="request-card">
+                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+                        <div>
+                            <div class="fw-semibold fs-5"><a class="ticket-link" href="{% url 'technician_request_detail' item.id %}">{{ item.subject }}</a></div>
+                            <div class="small-copy">{{ item.client.name }} - {{ item.machine.hostname|default:"General request" }} - opened by {{ item.requester.username }}</div>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="owner-pill">{% if item.assigned_to %}Assigned to {{ item.assigned_to.username }}{% else %}Unassigned{% endif %}</span>
+                            <span class="priority-pill priority-{{ item.priority }}">{{ item.get_priority_display }}</span>
+                            <span class="status-pill status-{{ item.status }}">{{ item.get_status_display }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-lg-5">
+                            <div class="metric-label mb-2">Client Description</div>
+                            <div class="small-copy mb-3">Created {{ item.created_at|date:"Y-m-d H:i" }}{% if item.closed_at %} - Resolved {{ item.closed_at|date:"Y-m-d H:i" }}{% endif %}</div>
+                            <div>{{ item.description }}</div>
+                        </div>
+                        <div class="col-lg-7">
+                            <form method="post" action="{% url 'technician_request_action' item.id %}">
+                                {% csrf_token %}
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label small-copy">Status</label>
+                                        <select name="status" class="form-select">
+                                            {% for value, label in update_status_choices %}
+                                            <option value="{{ value }}"{% if item.status == value %} selected{% endif %}>{{ label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label class="form-label small-copy">Resolution For Client</label>
+                                        <textarea name="resolution_summary" rows="4" class="form-control" placeholder="Explain what was done, what the outcome was, or what the next step is.">{{ item.resolution_summary }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mt-3">
+                                    <div class="small-copy">{% if item.closed_by %}Last resolved by {{ item.closed_by }}{% else %}No resolution published yet.{% endif %}</div>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <a href="{% url 'technician_request_detail' item.id %}" class="btn btn-outline-secondary">Open Ticket</a>
+                                        {% if not item.assigned_to or item.assigned_to != request.user %}
+                                        <button type="submit" name="action" value="assign_to_me" class="btn btn-outline-secondary">Assign to Me</button>
+                                        {% endif %}
+                                        {% if item.assigned_to %}
+                                        <button type="submit" name="action" value="clear_assignee" class="btn btn-outline-secondary">Clear Owner</button>
+                                        {% endif %}
+                                        <button type="submit" class="btn btn-primary">Save Ticket Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state">No tickets in this view right now.</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

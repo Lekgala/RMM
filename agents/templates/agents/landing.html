@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TJ RMM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --page-bg: #f4f8fc;
+            --surface: #ffffff;
+            --line: #d8e4ef;
+            --text-main: #17314d;
+            --text-muted: #6f87a0;
+            --accent: #1d88ff;
+            --accent-deep: #135fc9;
+            --accent-soft: #ebf4ff;
+            --success-soft: #eafaf2;
+            --shadow: 0 24px 55px rgba(19, 60, 105, 0.10);
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-main);
+            font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(29, 136, 255, 0.16), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(91, 181, 255, 0.12), transparent 32%),
+                linear-gradient(180deg, #fbfdff 0%, #f2f7fb 60%, #edf4fb 100%);
+        }
+        .navbar-shell {
+            padding: 1.25rem 0;
+        }
+        .brand-badge {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent), #5ab3ff);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 14px 28px rgba(29, 136, 255, 0.24);
+        }
+        .brand-logo {
+            width: 46px;
+            height: 46px;
+            object-fit: cover;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: #fff;
+            box-shadow: 0 14px 28px rgba(29, 136, 255, 0.12);
+        }
+        .hero,
+        .feature-card,
+        .entry-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+        .hero {
+            overflow: hidden;
+            position: relative;
+            background:
+                radial-gradient(circle at top right, rgba(29, 136, 255, 0.16), transparent 34%),
+                linear-gradient(135deg, #ffffff 0%, #f7fbff 100%);
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            right: -80px;
+            top: -80px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(29, 136, 255, 0.18), transparent 62%);
+        }
+        .eyebrow {
+            color: var(--accent-deep);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        .hero-copy {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            max-width: 780px;
+        }
+        .btn-primary,
+        .btn-outline-primary {
+            border-radius: 14px !important;
+            font-weight: 700 !important;
+            padding: 0.9rem 1.2rem !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-deep)) !important;
+            border: none !important;
+            box-shadow: 0 14px 28px rgba(29, 136, 255, 0.24);
+        }
+        .btn-outline-primary {
+            background: var(--accent-soft) !important;
+            color: var(--accent-deep) !important;
+            border-color: #bad8ff !important;
+        }
+        .feature-card,
+        .entry-card {
+            padding: 1.35rem;
+            height: 100%;
+        }
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: var(--accent-soft);
+            color: var(--accent-deep);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .muted {
+            color: var(--text-muted);
+        }
+        .entry-card .badge-soft {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 0.8rem;
+            border-radius: 999px;
+            background: var(--success-soft);
+            color: #0f8a5d;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="navbar-shell d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="brand-badge">TJ</div>
+                <div>
+                    <div class="fw-bold fs-2">TJ RMM</div>
+                    <div class="muted">Remote monitoring, management, and client operations</div>
+                </div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/admin/login/?next=/dashboard/" class="btn btn-outline-primary">Technician Sign In</a>
+                <a href="{% url 'client_login' %}" class="btn btn-outline-primary">Client Portal</a>
+                <a href="/admin/" class="btn btn-outline-primary">Admin</a>
+            </div>
+        </div>
+
+        <div class="hero p-5 mb-4">
+            <div class="eyebrow mb-3">Unified Endpoint Operations</div>
+            <h1 class="display-5 fw-bold mb-3">A cleaner front door for your RMM platform.</h1>
+            <p class="hero-copy mb-4">
+                Monitor devices, manage client access, review alerts, and launch support workflows from one place. TJ RMM gives technicians and clients a simpler, brighter way to stay on top of endpoint health.
+            </p>
+            <div class="d-flex gap-3 flex-wrap">
+                <a href="/admin/login/?next=/dashboard/" class="btn btn-primary">Technician Sign In</a>
+                <a href="{% url 'client_login' %}" class="btn btn-outline-primary">Client Sign In</a>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">1</div>
+                    <h3 class="h5">Live fleet visibility</h3>
+                    <p class="muted mb-0">Track online status, disk health, command results, and alerts across managed devices in real time.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">2</div>
+                    <h3 class="h5">Client self-service</h3>
+                    <p class="muted mb-0">Give each onboarded client a scoped portal for their own machines, approved actions, and alert history.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">3</div>
+                    <h3 class="h5">Operational control</h3>
+                    <p class="muted mb-0">Use technician tools, admin controls, and structured alert workflows without dropping into raw infrastructure screens.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="entry-card">
+                    <span class="badge-soft mb-3">For Technicians</span>
+                    <h3 class="h5 mt-3">Operations dashboard</h3>
+                    <p class="muted">Review fleet health, investigate processes, connect remotely, and manage alerts across every client environment.</p>
+                    <a href="/admin/login/?next=/dashboard/" class="btn btn-primary w-100">Technician Sign In</a>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="entry-card">
+                    <span class="badge-soft mb-3">For Clients</span>
+                    <h3 class="h5 mt-3">Client portal</h3>
+                    <p class="muted">Sign in to view assigned devices, track issues, and run approved maintenance actions safely within your own scope.</p>
+                    <a href="{% url 'client_login' %}" class="btn btn-primary w-100">Open Client Portal</a>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="entry-card">
+                    <span class="badge-soft mb-3">For Admins</span>
+                    <h3 class="h5 mt-3">Admin console</h3>
+                    <p class="muted">Manage onboarding, client access mappings, users, groups, and deeper operational settings from the admin area.</p>
+                    <a href="/admin/" class="btn btn-primary w-100">Open Admin</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

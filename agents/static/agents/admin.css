@@ -1,0 +1,349 @@
+:root {
+    --tj-bg: #f4f8fc;
+    --tj-surface: #ffffff;
+    --tj-surface-soft: #f7fbff;
+    --tj-line: #d9e4ef;
+    --tj-text: #17314d;
+    --tj-muted: #6f87a0;
+    --tj-accent: #1d88ff;
+    --tj-accent-deep: #135fc9;
+    --tj-success: #0f8a5d;
+    --tj-success-bg: #eafaf2;
+    --tj-warning: #aa7b00;
+    --tj-warning-bg: #fff8e7;
+    --tj-danger: #d1495b;
+    --tj-danger-bg: #fff0f0;
+    --tj-shadow: 0 18px 40px rgba(19, 60, 105, 0.08);
+    --tj-radius: 16px;
+}
+
+body,
+#container,
+.dashboard #content,
+#content-related,
+.module,
+.inline-group,
+div.breadcrumbs,
+.submit-row,
+.selector,
+.selector .selector-available,
+.selector .selector-chosen {
+    background: var(--tj-bg);
+}
+
+body,
+#container,
+#content,
+#content h1,
+#content h2,
+#content h3,
+.module caption,
+.module h2,
+.module thead th,
+a:link,
+a:visited {
+    color: var(--tj-text);
+}
+
+a:hover,
+a:active,
+a:focus {
+    color: var(--tj-accent-deep);
+}
+
+#header {
+    background: linear-gradient(135deg, #ffffff 0%, #f7fbff 100%);
+    color: var(--tj-text);
+    border-bottom: 1px solid var(--tj-line);
+    box-shadow: 0 10px 30px rgba(18, 58, 104, 0.06);
+}
+
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+    color: var(--tj-text);
+    font-weight: 700;
+}
+
+#user-tools,
+#user-tools a,
+#user-tools a:link,
+#user-tools a:visited,
+#header a,
+#header a:link,
+#header a:visited {
+    color: var(--tj-text) !important;
+}
+
+#user-tools a:hover,
+#user-tools a:focus,
+#header a:hover,
+#header a:focus {
+    color: var(--tj-accent-deep) !important;
+}
+
+#logout-form button,
+#logout-form input[type="submit"],
+#logout-form .button {
+    color: var(--tj-text) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    font-weight: 600;
+}
+
+#logout-form button:hover,
+#logout-form button:focus,
+#logout-form input[type="submit"]:hover,
+#logout-form input[type="submit"]:focus {
+    color: var(--tj-accent-deep) !important;
+}
+
+.tj-admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.tj-admin-brand__badge {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--tj-accent), #5ab3ff);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 14px 28px rgba(29, 136, 255, 0.24);
+}
+
+.tj-admin-brand__subtitle,
+.tj-admin-nav-copy {
+    color: var(--tj-muted);
+    font-size: 0.85rem;
+}
+
+div.breadcrumbs {
+    background: transparent;
+    border: none;
+    color: var(--tj-muted);
+    padding: 16px 40px 0;
+}
+
+div.breadcrumbs a,
+div.breadcrumbs a:link,
+div.breadcrumbs a:visited {
+    color: var(--tj-accent-deep);
+}
+
+#nav-sidebar {
+    background: linear-gradient(180deg, #f8fbff 0%, #f3f8fd 100%);
+    border-right: 1px solid var(--tj-line);
+}
+
+#nav-sidebar .current-model {
+    background: rgba(29, 136, 255, 0.12);
+}
+
+#nav-sidebar a,
+#nav-sidebar a:link,
+#nav-sidebar a:visited {
+    color: var(--tj-text);
+}
+
+#nav-sidebar .model-name,
+#nav-sidebar .section,
+#nav-sidebar th,
+#nav-sidebar caption,
+#nav-sidebar label {
+    color: var(--tj-text) !important;
+}
+
+#nav-sidebar .current-app .section,
+#nav-sidebar .current-app caption {
+    color: var(--tj-accent-deep) !important;
+}
+
+#content {
+    padding: 24px 32px;
+}
+
+.tj-admin-hero {
+    margin-bottom: 24px;
+    padding: 24px 26px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f6fbff 100%);
+    border: 1px solid var(--tj-line);
+    box-shadow: var(--tj-shadow);
+}
+
+.tj-admin-hero__eyebrow {
+    color: var(--tj-accent-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.tj-admin-hero h1 {
+    margin: 0 0 8px;
+    font-size: 1.9rem;
+}
+
+.tj-admin-hero p {
+    margin: 0;
+    color: var(--tj-muted);
+    max-width: 820px;
+}
+
+.module,
+.inline-group,
+.submit-row,
+div.results,
+.paginator,
+.object-tools a,
+.selector .selector-available,
+.selector .selector-chosen {
+    background: var(--tj-surface);
+    border: 1px solid var(--tj-line);
+    border-radius: var(--tj-radius);
+    box-shadow: var(--tj-shadow);
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: linear-gradient(135deg, #ffffff 0%, #f7fbff 100%);
+    color: var(--tj-text);
+    border-bottom: 1px solid var(--tj-line);
+    border-radius: var(--tj-radius) var(--tj-radius) 0 0;
+}
+
+table thead th {
+    background: #f8fbff;
+    color: var(--tj-muted);
+    border-bottom: 1px solid var(--tj-line);
+}
+
+thead th a,
+thead th a:link,
+thead th a:visited,
+.module caption a,
+.module caption a:link,
+.module caption a:visited,
+.module h2 a,
+.module h2 a:link,
+.module h2 a:visited {
+    color: var(--tj-text) !important;
+}
+
+tr:nth-child(even),
+.row-form-errors,
+tbody tr:hover {
+    background: #f9fbff;
+}
+
+input,
+textarea,
+select,
+.vTextField,
+.vLargeTextField {
+    border: 1px solid var(--tj-line);
+    border-radius: 12px;
+    background: #fbfdff;
+    color: var(--tj-text);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: rgba(29, 136, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(29, 136, 255, 0.12);
+}
+
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+    background: linear-gradient(135deg, var(--tj-accent), var(--tj-accent-deep));
+    border: none;
+    color: #fff;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+.button.secondary,
+.button.cancel-link,
+input[type=reset] {
+    background: #f8fbff;
+    border: 1px solid var(--tj-line);
+    color: var(--tj-text);
+}
+
+.button.default,
+input[type=submit].default,
+.submit-row input.default {
+    background: linear-gradient(135deg, var(--tj-accent), var(--tj-accent-deep));
+}
+
+.object-tools a:link,
+.object-tools a:visited {
+    color: #fff;
+}
+
+ul.messagelist li,
+ul.messagelist li.success,
+ul.messagelist li.warning,
+ul.messagelist li.error {
+    color: var(--tj-text);
+}
+
+ul.messagelist li.success a,
+ul.messagelist li.warning a,
+ul.messagelist li.error a {
+    color: var(--tj-accent-deep);
+}
+
+.admin-status {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status-online {
+    color: var(--tj-success);
+    background: var(--tj-success-bg);
+}
+
+.status-warning {
+    color: var(--tj-warning);
+    background: var(--tj-warning-bg);
+}
+
+.status-offline {
+    color: var(--tj-danger);
+    background: var(--tj-danger-bg);
+}
+
+.admin-connect-link {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 6px 12px;
+    color: #fff !important;
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--tj-accent), var(--tj-accent-deep));
+    font-weight: 700;
+}
+
+.admin-waiting {
+    color: var(--tj-muted);
+    font-weight: 600;
+}

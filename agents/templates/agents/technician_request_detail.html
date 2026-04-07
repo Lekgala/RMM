@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TJ RMM | {{ service_request.subject }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --surface: #ffffff;
+            --line: #d9e5f2;
+            --text-main: #16324f;
+            --text-muted: #6f86a0;
+            --accent-soft: #ebf4ff;
+            --shadow: 0 18px 45px rgba(25, 73, 129, 0.08);
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-main);
+            font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(28, 136, 255, 0.14), transparent 28%),
+                linear-gradient(180deg, #fafdff 0%, #f2f7fc 50%, #edf4fb 100%);
+        }
+        .panel, .hero, .card-shell {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+        }
+        .topbar {
+            margin: 1.5rem 1.5rem 0;
+            padding: 1.1rem 1.4rem;
+        }
+        .hero, .card-shell { padding: 1.35rem; }
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .small-copy { color: var(--text-muted); }
+        .scope-banner, .status-pill, .priority-pill, .owner-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .scope-banner { background: #eef6ff; color: #145ab8; border: 1px solid #cfe2ff; }
+        .status-open { background: #fff0f0; color: #d1495b; }
+        .status-in_progress { background: #fff8e7; color: #9c7400; }
+        .status-closed { background: #eafaf2; color: #0f8a5d; }
+        .priority-low { background: #eef6ff; color: #1466d6; }
+        .priority-normal { background: #ebf4ff; color: #135fc9; }
+        .priority-high { background: #fff8e7; color: #9c7400; }
+        .priority-urgent { background: #fff0f0; color: #d1495b; }
+        .owner-pill { background: #f3f6fa; color: #54657a; }
+        .btn {
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1c88ff, #1568db) !important;
+            border: none !important;
+        }
+        .btn-outline-secondary {
+            color: var(--text-muted) !important;
+            border: 1px solid var(--line) !important;
+            background: #f8fbff !important;
+        }
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            background: #fbfdff;
+            color: var(--text-main);
+            box-shadow: none;
+        }
+        .note-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #edf3f9;
+        }
+        .note-item:last-child { border-bottom: none; }
+        .empty-copy { color: var(--text-muted); text-align: center; padding: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="panel topbar d-flex justify-content-between align-items-center gap-3 flex-wrap">
+        <div>
+            <div class="metric-label">Ticket Detail</div>
+            <div class="fw-semibold fs-5">{{ service_request.subject }}</div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'technician_service_requests' %}" class="btn btn-outline-secondary btn-sm">Back to Queue</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm">Dashboard</a>
+        </div>
+    </div>
+
+    <div class="container-fluid py-4">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="panel p-3 mb-3">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="hero mb-4">
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                <div>
+                    <div class="metric-label mb-2">Technician Workspace</div>
+                    <h1 class="h3 mb-2">{{ service_request.subject }}</h1>
+                    <p class="mb-0 small-copy">{{ service_request.client.name }} - {{ service_request.machine.hostname|default:"General request" }} - opened by {{ service_request.requester.username }}</p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    {% if staff_client_access %}
+                    <div class="scope-banner">Scoped to {{ staff_client_access.client.name }}</div>
+                    {% endif %}
+                    <div class="priority-pill priority-{{ service_request.priority }}">{{ service_request.get_priority_display }}</div>
+                    <div class="status-pill status-{{ service_request.status }}">{{ service_request.get_status_display }}</div>
+                    <div class="owner-pill">{% if service_request.assigned_to %}Assigned to {{ service_request.assigned_to.username }}{% else %}Unassigned{% endif %}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-xl-5">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">Client Context</div>
+                    <div class="mb-3">
+                        <div class="small-copy">Created</div>
+                        <div class="fw-semibold">{{ service_request.created_at|date:"Y-m-d H:i" }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="small-copy">Last Updated</div>
+                        <div class="fw-semibold">{{ service_request.updated_at|date:"Y-m-d H:i" }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="small-copy">Client Description</div>
+                        <div>{{ service_request.description }}</div>
+                    </div>
+                    {% if service_request.resolution_summary %}
+                    <div>
+                        <div class="small-copy">Latest Client Resolution</div>
+                        <div>{{ service_request.resolution_summary }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-xl-7">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">Ticket Update</div>
+                    <form method="post" action="{% url 'technician_request_action' service_request.id %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small-copy">Status</label>
+                                {{ update_form.status }}
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label small-copy">Resolution For Client</label>
+                                {{ update_form.resolution_summary }}
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mt-3">
+                            <div class="small-copy">{% if service_request.closed_by %}Last resolved by {{ service_request.closed_by }}{% else %}No client-facing resolution published yet.{% endif %}</div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                {% if not service_request.assigned_to or service_request.assigned_to != request.user %}
+                                <button type="submit" name="action" value="assign_to_me" class="btn btn-outline-secondary">Assign to Me</button>
+                                {% endif %}
+                                {% if service_request.assigned_to %}
+                                <button type="submit" name="action" value="clear_assignee" class="btn btn-outline-secondary">Clear Owner</button>
+                                {% endif %}
+                                <button type="submit" class="btn btn-primary">Save Ticket Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-xl-5">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">Internal Notes</div>
+                    <form method="post" action="{% url 'technician_request_note_action' service_request.id %}" class="mb-4">
+                        {% csrf_token %}
+                        <label class="form-label small-copy">Add Technician Note</label>
+                        {{ note_form.body }}
+                        <div class="mt-3 d-grid">
+                            <button type="submit" class="btn btn-outline-secondary">Save Internal Note</button>
+                        </div>
+                    </form>
+                    {% if notes %}
+                        {% for note in notes %}
+                        <div class="note-item">
+                            <div class="d-flex justify-content-between gap-3 flex-wrap">
+                                <div class="fw-semibold">{{ note.author.username }}</div>
+                                <div class="small-copy">{{ note.created_at|date:"Y-m-d H:i" }}</div>
+                            </div>
+                            <div class="mt-2">{{ note.body|linebreaksbr }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="empty-copy">No internal notes yet.</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-xl-7">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">Client Progress Updates</div>
+                    <form method="post" action="{% url 'technician_request_public_update_action' service_request.id %}" class="mb-4">
+                        {% csrf_token %}
+                        <label class="form-label small-copy">Post Client-Facing Update</label>
+                        {{ public_update_form.body }}
+                        <div class="mt-3 d-grid">
+                            <button type="submit" class="btn btn-outline-secondary">Post Progress Update</button>
+                        </div>
+                    </form>
+                    {% if public_updates %}
+                        {% for update in public_updates %}
+                        <div class="note-item">
+                            <div class="d-flex justify-content-between gap-3 flex-wrap">
+                                <div class="fw-semibold">{{ update.author.username }}</div>
+                                <div class="small-copy">{{ update.created_at|date:"Y-m-d H:i" }}</div>
+                            </div>
+                            <div class="mt-2">{{ update.body|linebreaksbr }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="empty-copy">No client-facing updates yet.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-1">
+            <div class="col-12">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">Activity Timeline</div>
+                    <div class="note-item">
+                        <div class="d-flex justify-content-between gap-3 flex-wrap">
+                            <div class="fw-semibold">Ticket opened by {{ service_request.requester.username }}</div>
+                            <div class="small-copy">{{ service_request.created_at|date:"Y-m-d H:i" }}</div>
+                        </div>
+                    </div>
+                    {% if service_request.assigned_to %}
+                    <div class="note-item">
+                        <div class="d-flex justify-content-between gap-3 flex-wrap">
+                            <div class="fw-semibold">Currently assigned to {{ service_request.assigned_to.username }}</div>
+                            <div class="small-copy">{{ service_request.updated_at|date:"Y-m-d H:i" }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if service_request.resolution_summary %}
+                    <div class="note-item">
+                        <div class="d-flex justify-content-between gap-3 flex-wrap">
+                            <div class="fw-semibold">Client-facing resolution updated</div>
+                            <div class="small-copy">{{ service_request.updated_at|date:"Y-m-d H:i" }}</div>
+                        </div>
+                        <div class="mt-2">{{ service_request.resolution_summary|linebreaksbr }}</div>
+                    </div>
+                    {% endif %}
+                    {% if service_request.closed_at %}
+                    <div class="note-item">
+                        <div class="d-flex justify-content-between gap-3 flex-wrap">
+                            <div class="fw-semibold">Ticket closed by {{ service_request.closed_by }}</div>
+                            <div class="small-copy">{{ service_request.closed_at|date:"Y-m-d H:i" }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

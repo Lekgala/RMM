@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TJ RMM | Client Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --line: #d8e4ef;
+            --text-main: #16324f;
+            --text-muted: #74879d;
+            --accent: #1c88ff;
+            --accent-deep: #135fc9;
+            --surface: #ffffff;
+            --shadow: 0 24px 60px rgba(20, 60, 108, 0.12);
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at top left, rgba(28, 136, 255, 0.15), transparent 26%),
+                radial-gradient(circle at bottom right, rgba(90, 179, 255, 0.14), transparent 32%),
+                linear-gradient(180deg, #fbfdff 0%, #eef5fb 100%);
+            color: var(--text-main);
+            font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+        }
+        .login-shell {
+            width: min(980px, 94vw);
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            border-radius: 24px;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+        }
+        .brand-panel {
+            padding: 3rem;
+            background: linear-gradient(145deg, #1d86fd, #5bb5ff);
+            color: #fff;
+            position: relative;
+        }
+        .brand-panel::after {
+            content: "";
+            position: absolute;
+            right: -60px;
+            bottom: -70px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .form-panel {
+            padding: 3rem;
+            background: #fff;
+        }
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .form-control {
+            background: #f8fbff;
+            border: 1px solid var(--line);
+            color: var(--text-main);
+            padding: 0.9rem 1rem;
+            border-radius: 14px;
+        }
+        .form-control:focus {
+            border-color: rgba(28, 136, 255, 0.5);
+            box-shadow: 0 0 0 0.2rem rgba(28, 136, 255, 0.12);
+            background: #fff;
+            color: var(--text-main);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1c88ff, #135fc9);
+            border: none;
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
+            font-weight: 700;
+            box-shadow: 0 14px 28px rgba(28, 136, 255, 0.24);
+        }
+        .helper-copy { color: var(--text-muted); }
+        @media (max-width: 900px) {
+            .login-shell { grid-template-columns: 1fr; }
+            .brand-panel, .form-panel { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-shell">
+        <div class="brand-panel d-flex flex-column justify-content-between">
+            <div>
+                <div class="eyebrow mb-3">TJ RMM</div>
+                <h1 class="display-6 fw-bold mb-3">A cleaner client portal for modern endpoint support.</h1>
+                <p class="mb-0" style="max-width: 460px; opacity: 0.94;">Sign in to view the machines assigned to your company, launch remote support, and trigger approved maintenance actions.</p>
+            </div>
+            <div class="small mt-4" style="opacity: 0.9;">Secure client-scoped access for every onboarded organization.</div>
+        </div>
+        <div class="form-panel d-flex flex-column justify-content-center">
+            <div class="mb-4">
+                <div class="eyebrow mb-2" style="color: var(--accent-deep);">Client Portal</div>
+                <h2 class="h3 mb-2">Sign in to your workspace</h2>
+                <p class="helper-copy mb-0">Use the credentials created for your company during onboarding.</p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-warning py-2">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger py-2">{{ form.non_field_errors|join:", " }}</div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">{{ form.username }}</div>
+                <div class="mb-3">{{ form.password }}</div>
+                <button type="submit" class="btn btn-primary w-100">Sign In</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

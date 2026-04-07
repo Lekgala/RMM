@@ -1,0 +1,11 @@
+{% extends "errors/base.html" %}
+
+{% block extra %}
+<div class="note">
+    This usually happens when the page was left open too long, the back button was used after signing in, or a newer login replaced the older security token.
+    {% if csrf_reason %}
+    <br><br>
+    Technical reason: {{ csrf_reason }}
+    {% endif %}
+</div>
+{% endblock %}

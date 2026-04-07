@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}TJ RMM Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'agents/admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div class="tj-admin-brand">
+    <div class="tj-admin-brand__badge">TJ</div>
+    <div>
+        <h1 id="site-name">TJ RMM Admin</h1>
+        <div class="tj-admin-brand__subtitle">Operations Console</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block nav-global %}
+<div class="tj-admin-nav-copy">Monitor clients, endpoints, access, and actions from one place.</div>
+{% endblock %}

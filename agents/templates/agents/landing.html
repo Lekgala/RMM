@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TJ RMM</title>
+    <title>TJ RMM - Professional Remote Monitoring & Management</title>
+    <meta name="description" content="Transform your IT operations with TJ RMM. Professional remote monitoring, client management, and support ticketing in one unified platform.">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --page-bg: #f4f8fc;
@@ -137,84 +139,356 @@
     </style>
 </head>
 <body>
-    <div class="container py-4">
-        <div class="navbar-shell d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="brand-badge">TJ</div>
-                <div>
-                    <div class="fw-bold fs-2">TJ RMM</div>
-                    <div class="muted">Remote monitoring, management, and client operations</div>
-                </div>
-            </div>
-            <div class="d-flex gap-2 flex-wrap">
-                <a href="/admin/login/?next=/dashboard/" class="btn btn-outline-primary">Technician Sign In</a>
-                <a href="{% url 'client_login' %}" class="btn btn-outline-primary">Client Portal</a>
-                <a href="/admin/" class="btn btn-outline-primary">Admin</a>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="#" style="color: #1e40af;">
+                <span style="color: #1e40af;">TJ</span> RMM
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/login/?next=/dashboard/" style="background: white; color: #1e40af; border: none; padding: 8px 16px; font-weight: 600; border-radius: 50px; text-decoration: none; margin-left: 1rem;">Sign In</a></li>
+                </ul>
             </div>
         </div>
+    </nav>
 
-        <div class="hero p-5 mb-4">
-            <div class="eyebrow mb-3">Unified Endpoint Operations</div>
-            <h1 class="display-5 fw-bold mb-3">A cleaner front door for your RMM platform.</h1>
-            <p class="hero-copy mb-4">
-                Monitor devices, manage client access, review alerts, and launch support workflows from one place. TJ RMM gives technicians and clients a simpler, brighter way to stay on top of endpoint health.
-            </p>
-            <div class="d-flex gap-3 flex-wrap">
-                <a href="/admin/login/?next=/dashboard/" class="btn btn-primary">Technician Sign In</a>
-                <a href="{% url 'client_login' %}" class="btn btn-outline-primary">Client Sign In</a>
+    <!-- Hero Section -->
+    <section style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 120px 0; position: relative; overflow: hidden;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div style="position: relative; z-index: 2;">
+                        <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.1;">Professional RMM Platform</h1>
+                        <p style="font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.9;">Transform your IT operations with our comprehensive remote monitoring and management solution. Monitor devices, manage clients, and streamline support workflows from one powerful platform.</p>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <a href="{% url 'client_trial_signup' %}" style="background: white; color: #1e40af; border: none; padding: 15px 30px; font-weight: 600; border-radius: 50px; text-decoration: none;">Start Free Trial</a>
+                            <a href="#features" class="btn btn-outline-light">Learn More</a>
+                        </div>
+                        <div class="mt-4">
+                            <small class="text-light opacity-75">✓ 30-day free trial • ✓ No credit card required • ✓ Full feature access</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://via.placeholder.com/600x400/1e40af/ffffff?text=RMM+Dashboard" alt="TJ RMM Dashboard" class="img-fluid rounded-3 shadow-lg">
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">1</div>
-                    <h3 class="h5">Live fleet visibility</h3>
-                    <p class="muted mb-0">Track online status, disk health, command results, and alerts across managed devices in real time.</p>
+    <!-- Features Section -->
+    <section id="features" style="padding: 80px 0;">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 3rem; color: #0f172a;">Why Choose TJ RMM?</h2>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div style="background: white; border-radius: 20px; padding: 40px 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%;">
+                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <h3>Real-Time Monitoring</h3>
+                        <p>Monitor device health, performance metrics, and system status in real-time across all managed endpoints.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">2</div>
-                    <h3 class="h5">Client self-service</h3>
-                    <p class="muted mb-0">Give each onboarded client a scoped portal for their own machines, approved actions, and alert history.</p>
+                <div class="col-lg-4 col-md-6">
+                    <div style="background: white; border-radius: 20px; padding: 40px 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%;">
+                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Client Portal</h3>
+                        <p>Empower your clients with self-service access to their devices, support tickets, and maintenance history.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">3</div>
-                    <h3 class="h5">Operational control</h3>
-                    <p class="muted mb-0">Use technician tools, admin controls, and structured alert workflows without dropping into raw infrastructure screens.</p>
+                <div class="col-lg-4 col-md-6">
+                    <div style="background: white; border-radius: 20px; padding: 40px 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%;">
+                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h3>Remote Management</h3>
+                        <p>Execute remote commands, deploy updates, and perform maintenance tasks securely from anywhere.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div style="background: white; border-radius: 20px; padding: 40px 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%;">
+                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h3>Smart Alerts</h3>
+                        <p>Get notified of critical issues, performance degradation, and security threats automatically.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div style="background: white; border-radius: 20px; padding: 40px 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%;">
+                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Reporting & Analytics</h3>
+                        <p>Generate comprehensive reports on device performance, uptime, and support metrics.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div style="background: white; border-radius: 20px; padding: 40px 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%;">
+                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Enterprise Security</h3>
+                        <p>Bank-level security with role-based access control, audit logs, and encrypted communications.</p>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="entry-card">
-                    <span class="badge-soft mb-3">For Technicians</span>
-                    <h3 class="h5 mt-3">Operations dashboard</h3>
-                    <p class="muted">Review fleet health, investigate processes, connect remotely, and manage alerts across every client environment.</p>
-                    <a href="/admin/login/?next=/dashboard/" class="btn btn-primary w-100">Technician Sign In</a>
+    <!-- Pricing Section -->
+    <section id="pricing" style="padding: 80px 0; background: #f8fafc;">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 3rem; color: #0f172a;">Simple, Transparent Pricing</h2>
+            <div class="row g-4 justify-content-center">
+                {% for plan in plans %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="pricing-card{% if plan.monthly_price_cents == 9900 %} popular{% endif %}" style="background: white; border-radius: 20px; padding: 40px 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: all 0.3s ease; position: relative; height: 100%;">
+                        {% if plan.monthly_price_cents == 9900 %}
+                        <div class="badge bg-primary text-white position-absolute top-0 start-50 translate-middle">Most Popular</div>
+                        {% endif %}
+                        <h3>{{ plan.name }}</h3>
+                        <div style="font-size: 3rem; font-weight: 800; color: #1e40af; margin: 20px 0;">${% widthratio plan.monthly_price_cents 100 1 %}<span style="color: #64748b; font-size: 1rem;">/month</span></div>
+                        <p>{{ plan.description }}</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success me-2"></i>Up to {{ plan.max_machines|default:"Unlimited" }} devices</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ plan.max_user_seats|default:"Unlimited" }} user seats</li>
+                            <li><i class="fas fa-check text-success me-2"></i>24/7 monitoring</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Client portal access</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Priority support</li>
+                        </ul>
+                        <a href="{% url 'client_trial_signup' %}?plan={{ plan.slug }}" class="btn btn-primary w-100 mt-3">Start Free Trial</a>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            <div class="col-lg-4">
-                <div class="entry-card">
-                    <span class="badge-soft mb-3">For Clients</span>
-                    <h3 class="h5 mt-3">Client portal</h3>
-                    <p class="muted">Sign in to view assigned devices, track issues, and run approved maintenance actions safely within your own scope.</p>
-                    <a href="{% url 'client_login' %}" class="btn btn-primary w-100">Open Client Portal</a>
+            <div class="text-center mt-5">
+                <p class="text-muted">All plans include 30-day free trial. No setup fees. Cancel anytime.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" style="padding: 80px 0;">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 3rem; color: #0f172a;">What Our Customers Say</h2>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div style="background: #f8fafc; border-radius: 20px; padding: 30px; margin: 20px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                        <div style="font-style: italic; font-size: 1.1rem; margin-bottom: 20px;">
+                            "TJ RMM has transformed how we manage our clients' IT infrastructure. The client portal has reduced support tickets by 60%."
+                        </div>
+                        <div style="font-weight: 600; color: #1e40af;">
+                            Sarah Johnson<br>
+                            <small class="text-muted">IT Director, TechCorp Solutions</small>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="entry-card">
-                    <span class="badge-soft mb-3">For Admins</span>
-                    <h3 class="h5 mt-3">Admin console</h3>
-                    <p class="muted">Manage onboarding, client access mappings, users, groups, and deeper operational settings from the admin area.</p>
-                    <a href="/admin/" class="btn btn-primary w-100">Open Admin</a>
+                <div class="col-lg-4">
+                    <div style="background: #f8fafc; border-radius: 20px; padding: 30px; margin: 20px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                        <div style="font-style: italic; font-size: 1.1rem; margin-bottom: 20px;">
+                            "The real-time monitoring and automated alerts have helped us prevent downtime before it happens. Excellent ROI."
+                        </div>
+                        <div style="font-weight: 600; color: #1e40af;">
+                            Michael Chen<br>
+                            <small class="text-muted">MSP Owner, CloudTech Services</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div style="background: #f8fafc; border-radius: 20px; padding: 30px; margin: 20px 0; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                        <div style="font-style: italic; font-size: 1.1rem; margin-bottom: 20px;">
+                            "Professional, reliable, and easy to use. Our clients love the self-service portal. Highly recommended!"
+                        </div>
+                        <div style="font-weight: 600; color: #1e40af;">
+                            Emily Rodriguez<br>
+                            <small class="text-muted">Operations Manager, Digital Solutions Inc</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section style="padding: 80px 0; background: #f8fafc;">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 3rem; color: #0f172a;">Frequently Asked Questions</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div style="border-bottom: 1px solid #e2e8f0; padding: 20px 0;">
+                        <div style="font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleFAQ(this)">
+                            How does the free trial work?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div style="margin-top: 10px; color: #64748b;">
+                            Start your 30-day free trial with full access to all features. No credit card required. We'll send you a reminder before the trial ends.
+                        </div>
+                    </div>
+                    <div style="border-bottom: 1px solid #e2e8f0; padding: 20px 0;">
+                        <div style="font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleFAQ(this)">
+                            Can I migrate from my current RMM solution?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div style="margin-top: 10px; color: #64748b;">
+                            Yes! We offer migration assistance and data import tools. Our support team will help you transition smoothly.
+                        </div>
+                    </div>
+                    <div style="border-bottom: 1px solid #e2e8f0; padding: 20px 0;">
+                        <div style="font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleFAQ(this)">
+                            Is my data secure?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div style="margin-top: 10px; color: #64748b;">
+                            Absolutely. We use bank-level encryption, secure data centers, and comply with SOC 2 and GDPR standards. Your data is always protected.
+                        </div>
+                    </div>
+                    <div style="border-bottom: 1px solid #e2e8f0; padding: 20px 0;">
+                        <div style="font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleFAQ(this)">
+                            What kind of support do you provide?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div style="margin-top: 10px; color: #64748b;">
+                            We offer 24/7 technical support, comprehensive documentation, video tutorials, and dedicated account management for enterprise clients.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" style="padding: 80px 0;">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 3rem; color: #0f172a;">Get Started Today</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                        <h3 class="text-center mb-4">Ready to Transform Your IT Operations?</h3>
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
+                                <div>
+                                    <strong>Email</strong><br>
+                                    <a href="mailto:sales@tj-rmm.com">sales@tj-rmm.com</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-phone fa-2x text-primary mb-2"></i>
+                                <div>
+                                    <strong>Phone</strong><br>
+                                    <a href="tel:+1-555-RMM-HELP">+1 (555) RMM-HELP</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-comments fa-2x text-primary mb-2"></i>
+                                <div>
+                                    <strong>Live Chat</strong><br>
+                                    Available 24/7
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="{% url 'client_trial_signup' %}" class="btn btn-primary btn-lg">Start Free Trial</a>
+                            <p class="mt-3 text-muted">Join 500+ MSPs already using TJ RMM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: #0f172a; color: white; padding: 40px 0; text-align: center;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h4>TJ RMM</h4>
+                    <p>Professional remote monitoring and management platform for modern IT service providers.</p>
+                </div>
+                <div class="col-lg-2">
+                    <h5>Product</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#testimonials">Testimonials</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h5>Support</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h5>Company</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h5>Legal</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Terms</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <p class="mb-0">&copy; 2026 TJ RMM. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                answer.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+    <style>
+        .pricing-card.popular {
+            border: 3px solid #1e40af !important;
+            transform: scale(1.05);
+        }
+    </style>
 </body>
 </html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TJ RMM | {{ machine.hostname }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --surface: #ffffff;
+            --line: #d9e5f2;
+            --text-main: #16324f;
+            --text-muted: #6f86a0;
+            --accent-soft: #ebf4ff;
+            --shadow: 0 18px 45px rgba(25, 73, 129, 0.08);
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-main);
+            font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(28, 136, 255, 0.14), transparent 28%),
+                linear-gradient(180deg, #fafdff 0%, #f2f7fc 50%, #edf4fb 100%);
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(6px);
+            box-shadow: 0 4px 12px rgba(25, 73, 129, 0.08);
+            border-bottom: 1px solid var(--line);
+        }
+        .navbar-brand { font-weight: 700; color: var(--text-main) !important; }
+        .nav-link { color: var(--text-muted) !important; font-weight: 600; }
+        .nav-link:hover { color: var(--text-main) !important; }
+        .nav-link.active { color: var(--text-main) !important; }
+        .panel, .hero, .card-shell, .table-shell {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+        }
+        .topbar {
+            margin: 1.5rem 1.5rem 0;
+            padding: 1.1rem 1.4rem;
+        }
+        .hero, .card-shell { padding: 1.35rem; }
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .small-copy { color: var(--text-muted); }
+        .scope-banner, .status-pill, .action-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .scope-banner {
+            background: #eef6ff;
+            color: #145ab8;
+            border: 1px solid #cfe2ff;
+        }
+        .status-online { background: #eafaf2; color: #0f8a5d; }
+        .status-offline { background: #fff0f0; color: #d1495b; }
+        .action-pill { background: #fff8e7; color: #9c7400; }
+        .restricted-action { opacity: 0.6; cursor: not-allowed; }
+        .btn {
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1c88ff, #1568db) !important;
+            border: none !important;
+        }
+        .btn-outline-secondary {
+            color: var(--text-muted) !important;
+            border: 1px solid var(--line) !important;
+            background: #f8fbff !important;
+        }
+        .btn-outline-danger {
+            color: #d1495b !important;
+            border: 1px solid #f1c7cd !important;
+            background: #fff7f7 !important;
+        }
+        .btn-outline-light {
+            color: var(--text-muted) !important;
+            border: 1px solid var(--line) !important;
+            background: #f8fbff !important;
+        }
+        .table-shell { overflow: hidden; }
+        .table { margin-bottom: 0; color: var(--text-main); }
+        .table thead th {
+            background: #f8fbff;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 1rem 1.1rem;
+            border-bottom: 1px solid var(--line);
+        }
+        .table tbody td {
+            padding: 1rem 1.1rem;
+            border-bottom: 1px solid #edf3f9;
+        }
+        .info-value { font-weight: 600; }
+        .empty-copy { color: var(--text-muted); text-align: center; padding: 1.5rem; }
+        pre {
+            margin: 0;
+            padding: 1rem;
+            background: #f8fbff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            color: var(--text-main);
+        }
+        .permission-banner {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            background: #fff8e7;
+            color: #9c7400;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'client_dashboard' %}">TJ RMM</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'client_dashboard' %}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'client_service_requests' %}">Support</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'client_team' %}">Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'client_settings' %}">Settings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'client_logout' %}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="panel topbar d-flex justify-content-between align-items-center gap-3 flex-wrap">
+        <div>
+            <div class="metric-label">Device Detail</div>
+            <div class="fw-semibold fs-5">{{ machine.hostname }}</div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'client_dashboard' %}" class="btn btn-outline-secondary btn-sm">Back to Devices</a>
+        </div>
+    </div>
+
+    <div class="container-fluid py-4">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info mb-3">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% if not can_manage %}
+        <div class="permission-banner">
+            <strong>Read-Only Access:</strong> Your role allows you to view this device's information but not perform management actions.
+        </div>
+        {% endif %}
+
+        <div class="hero mb-4">
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                <div>
+                    <div class="metric-label mb-2">Device Overview</div>
+                    <h1 class="h3 mb-2">{{ machine.hostname }}</h1>
+                    <p class="mb-0 small-copy">
+                        {{ machine.os_info|default:"No operating system reported yet." }}
+                    </p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    {% if machine.is_online %}
+                    <div class="status-pill status-online">Online</div>
+                    {% else %}
+                    <div class="status-pill status-offline">Offline</div>
+                    {% endif %}
+                    {% if machine.pending_command and machine.pending_command != 'None' %}
+                    <div class="action-pill">Queued: {{ machine.pending_command }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-lg-8">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">System Information</div>
+                    <div class="row g-3">
+                        <div class="col-md-4"><div class="small-copy">IP Address</div><div class="info-value">{{ machine.ip_address|default:"-" }}</div></div>
+                        <div class="col-md-4"><div class="small-copy">MAC Address</div><div class="info-value">{{ machine.mac_address|default:"-" }}</div></div>
+                        <div class="col-md-4"><div class="small-copy">Manufacturer</div><div class="info-value">{{ machine.manufacturer|default:"-" }}</div></div>
+                        <div class="col-md-4"><div class="small-copy">Model</div><div class="info-value">{{ machine.model_name|default:"-" }}</div></div>
+                        <div class="col-md-4"><div class="small-copy">CPU</div><div class="info-value">{{ machine.cpu_model|default:"-" }}</div></div>
+                        <div class="col-md-4"><div class="small-copy">RAM</div><div class="info-value">{{ machine.ram_gb|default:"-" }} GB</div></div>
+                        <div class="col-md-4"><div class="small-copy">Disk Usage</div><div class="info-value">{{ machine.disk_usage_percent|default:"-" }}{% if machine.disk_usage_percent != None %}%{% endif %}</div></div>
+                        <div class="col-md-4"><div class="small-copy">Last Seen</div><div class="info-value">{{ machine.last_seen|date:"Y-m-d H:i" }}</div></div>
+                        <div class="col-md-4"><div class="small-copy">Last Boot</div><div class="info-value">{{ machine.last_boot_time|date:"Y-m-d H:i"|default:"-" }}</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">Device Controls</div>
+                    <div class="d-grid gap-2">
+                        <form method="post" action="{% url 'client_machine_action' machine.id %}" {% if not can_manage %}class="restricted-action"{% endif %}>
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="toggle_maintenance">
+                            <button type="submit" class="btn btn-outline-light w-100" {% if not can_manage %}disabled{% endif %}>Maintenance: {% if machine.auto_maintenance %}On{% else %}Off{% endif %}</button>
+                        </form>
+                        {% if can_restart %}
+                        <form method="post" action="{% url 'client_machine_action' machine.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="reboot">
+                            <button type="submit" class="btn btn-outline-danger w-100">Queue Reboot</button>
+                        </form>
+                        {% endif %}
+                        <form method="post" action="{% url 'client_machine_action' machine.id %}" {% if not can_manage %}class="restricted-action"{% endif %}>
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="cleanup">
+                            <button type="submit" class="btn btn-outline-secondary w-100" {% if not can_manage %}disabled{% endif %}>Queue Cleanup</button>
+                        </form>
+                        {% if machine.remote_id %}
+                        <a href="rustdesk://{{ machine.remote_id }}" class="btn btn-primary w-100">Open Remote Session</a>
+                        {% else %}
+                        <button class="btn btn-outline-secondary w-100" disabled>Remote Session (Pending)</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-xl-6">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">Active Alerts</div>
+                    {% if recent_alerts %}
+                        {% for alert in recent_alerts %}
+                        <div class="mb-3 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between gap-3 flex-wrap">
+                                <div class="fw-semibold">{{ alert.title }}</div>
+                                <div class="small-copy">{{ alert.get_status_display }}</div>
+                            </div>
+                            <div class="small-copy mt-1">{{ alert.message }}</div>
+                            <div class="small-copy mt-2">{{ alert.created_at|date:"Y-m-d H:i" }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="empty-copy">No alerts for this device.</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">Support Requests</div>
+                    {% if recent_requests %}
+                        {% for item in recent_requests %}
+                        <div class="mb-3 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between gap-3 flex-wrap">
+                                <div class="fw-semibold">{{ item.subject }}</div>
+                                <div class="small-copy">{{ item.get_status_display }}</div>
+                            </div>
+                            <div class="small-copy mt-1">Opened by {{ item.requester.username }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="empty-copy">No support requests for this device.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-xl-6">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">Running Processes</div>
+                    {% if machine.process_list %}
+                    <div class="table-shell">
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead><tr><th>Process</th><th>CPU</th><th>Memory</th></tr></thead>
+                                <tbody>
+                                    {% for proc in machine.process_list %}
+                                    <tr>
+                                        <td>{{ proc.name }}</td>
+                                        <td>{{ proc.cpu }}</td>
+                                        <td>{{ proc.memory }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% else %}
+                    <pre>No process data reported yet.</pre>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="card-shell h-100">
+                    <div class="metric-label mb-3">Activity Timeline</div>
+                    {% if recent_logs %}
+                    <div class="table-shell">
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead><tr><th>Time</th><th>Action</th></tr></thead>
+                                <tbody>
+                                    {% for log in recent_logs %}
+                                    <tr>
+                                        <td>{{ log.timestamp|date:"Y-m-d H:i" }}</td>
+                                        <td>{{ log.action }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="empty-copy">No activity recorded.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

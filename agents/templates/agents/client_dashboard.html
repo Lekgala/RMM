@@ -250,6 +250,7 @@
         </div>
         <div class="d-flex align-items-center gap-3">
             <span class="role-badge">{{ client_access.get_role_display }}</span>
+            <a href="{% url 'client_download_agent' %}" class="btn btn-outline-info btn-sm">Download Agent (EXE/PS1)</a>
             <a href="{% url 'client_billing' %}" class="btn btn-outline-info btn-sm">Billing</a>
             <a href="{% url 'client_notifications' %}" class="notification-chip">Inbox {% if notification_count %}<span>{{ notification_count }}</span>{% else %}<span>0</span>{% endif %}</a>
             <span class="small-copy">Signed in as {{ request.user.username }}</span>
@@ -273,6 +274,9 @@
                     <div class="eyebrow mb-2">Your Environment</div>
                     <h1 class="h3 mb-2">Monitor and manage only the machines assigned to your team.</h1>
                     <p class="mb-0 small-copy">This portal keeps your company scoped to its own endpoints while still giving you quick access to maintenance, cleanup, and remote support.</p>
+                    {% if subscription and subscription.status == 'trialing' and subscription.trial_end %}
+                    <p class="small-copy mt-2 mb-0"><strong>Trial active:</strong> access ends on {{ subscription.trial_end|date:"Y-m-d" }} unless billing is enabled.</p>
+                    {% endif %}
                     {% if client_access.can_view_only %}
                     <p class="small-copy mt-2 mb-0">Your role is view-only, so machine actions are hidden.</p>
                     {% elif not client_access.can_manage_devices %}
@@ -285,6 +289,11 @@
                     <a href="{% url 'client_settings' %}" class="btn btn-outline-light">Company Settings</a>
                     {% endif %}
                     <a href="{% url 'client_service_requests' %}" class="btn btn-outline-info">Open Support Requests</a>
+                    <form method="post" action="{% url 'client_agent_connection_test' %}" class="d-flex gap-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="hub_url" value="{{ default_agent_hub_url }}">
+                        <button type="submit" class="btn btn-outline-info">Test Agent Connection</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -379,7 +388,7 @@
                     <tbody>
                         {% for machine in machines %}
                         <tr>
-                            <td><div class="fw-semibold">{{ machine.hostname }}</div></td>
+                            <td><div class="fw-semibold"><a href="{% url 'client_machine_detail' machine.id %}" style="text-decoration: none; color: var(--text-main);">{{ machine.hostname }}</a></div></td>
                             <td>{% if machine.is_online %}<span class="status-pill status-online">Online</span>{% else %}<span class="status-pill status-offline">Offline</span>{% endif %}</td>
                             <td>{{ machine.os_info|default:"-" }}</td>
                             <td><span class="disk-pill">{{ machine.disk_usage_percent|default:"-" }}{% if machine.disk_usage_percent != None %}%{% endif %}</span></td>

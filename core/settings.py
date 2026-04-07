@@ -116,7 +116,7 @@ EMAIL_HOST_USER = os.getenv("TJ_RMM_EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("TJ_RMM_EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = os.getenv("TJ_RMM_EMAIL_USE_TLS", "false").lower() == "true"
 EMAIL_USE_SSL = os.getenv("TJ_RMM_EMAIL_USE_SSL", "false").lower() == "true"
-CLIENT_PORTAL_BASE_URL = os.getenv("TJ_RMM_CLIENT_PORTAL_BASE_URL", "http://127.0.0.1:8000")
+CLIENT_PORTAL_BASE_URL = os.getenv("TJ_RMM_CLIENT_PORTAL_BASE_URL", "http://192.168.1.120:8000")
 STRIPE_PUBLISHABLE_KEY = os.getenv("TJ_RMM_STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_SECRET_KEY = os.getenv("TJ_RMM_STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("TJ_RMM_STRIPE_WEBHOOK_SECRET", "")
@@ -126,6 +126,14 @@ STRIPE_SUCCESS_URL = os.getenv(
 )
 STRIPE_CANCEL_URL = os.getenv("TJ_RMM_STRIPE_CANCEL_URL", CLIENT_PORTAL_BASE_URL + "/client/billing/")
 STRIPE_CURRENCY = os.getenv("TJ_RMM_STRIPE_CURRENCY", "usd").lower()
+AGENT_EXE_PATH = os.getenv(
+    "TJ_RMM_AGENT_EXE_PATH",
+    str(BASE_DIR / "media" / "deployments" / "tj-rmm-agent.exe"),
+)
+AGENT_SCRIPT_PATH = os.getenv(
+    "TJ_RMM_AGENT_SCRIPT_PATH",
+    str(BASE_DIR / "media" / "deployments" / "tj-rmm-agent.ps1"),
+)
 
 SUPPORT_NOTIFICATION_EMAILS = [
     email.strip()

@@ -5,6 +5,129 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import Client, ClientAccess, ClientInvitation, ServiceRequest, ServiceRequestNote, ServiceRequestPublicUpdate, SubscriptionPlan
 
 
+class TrialSignupForm(forms.Form):
+    company_name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Acme Managed Services",
+                "autofocus": True,
+            }
+        ),
+        label="Company name",
+    )
+    full_name = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Jane Doe",
+            }
+        ),
+        label="Your full name",
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "jane@acme.com",
+            }
+        ),
+        label="Work email",
+    )
+    username = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "jane.admin",
+            }
+        ),
+        label="Username",
+    )
+    password1 = forms.CharField(
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Create a password",
+            }
+        ),
+        label="Password",
+    )
+    password2 = forms.CharField(
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Confirm password",
+            }
+        ),
+        label="Confirm password",
+    )
+    plan = forms.ModelChoiceField(
+        queryset=SubscriptionPlan.objects.none(),
+        widget=forms.Select(attrs={"class": "form-select"}),
+        empty_label=None,
+        label="Trial plan",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["plan"].queryset = SubscriptionPlan.objects.filter(is_active=True).order_by("monthly_price_cents")
+
+    def clean_company_name(self):
+        company_name = self.cleaned_data["company_name"].strip()
+        if Client.objects.filter(name__iexact=company_name).exists():
+            raise forms.ValidationError("A client with this company name already exists.")
+        return company_name
+
+    def clean_username(self):
+        username = self.cleaned_data["username"].strip()
+        if User.objects.filter(username__iexact=username).exists():
+            raise forms.ValidationError("That username is already taken.")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data["email"].strip().lower()
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError("An account with this email already exists.")
+        return email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            self.add_error("password2", "The passwords do not match.")
+        return cleaned_data
+
+
+class AgentInstallerUploadForm(forms.Form):
+    installer = forms.FileField(
+        widget=forms.ClearableFileInput(
+            attrs={
+                "class": "form-control",
+                "accept": ".exe",
+            }
+        ),
+        label="Windows agent installer (.exe)",
+    )
+
+    def clean_installer(self):
+        installer = self.cleaned_data["installer"]
+        filename = (installer.name or "").lower()
+        if not filename.endswith(".exe"):
+            raise forms.ValidationError("Upload a Windows executable (.exe) file.")
+
+        max_size_bytes = 250 * 1024 * 1024
+        if installer.size > max_size_bytes:
+            raise forms.ValidationError("Installer file is too large. Maximum allowed size is 250 MB.")
+
+        return installer
+
+
 class ClientLoginForm(AuthenticationForm):
     username = forms.CharField(
         max_length=150,

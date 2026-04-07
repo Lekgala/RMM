@@ -3,6 +3,9 @@ import secrets
 import stripe
 from datetime import datetime, timedelta
 from hmac import compare_digest
+from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 from django.contrib import messages
 from django.contrib.auth import logout as auth_logout
@@ -13,18 +16,21 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.views import LoginView
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import FileResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import (
+    AgentInstallerUploadForm,
     ClientAccessUpdateForm,
     ClientBillingForm,
     ClientInvitationAcceptForm,
     ClientInvitationForm,
+    TrialSignupForm,
     ClientLoginForm,
     ClientSettingsForm,
     ExistingUserAccessForm,
@@ -74,7 +80,12 @@ def _parse_processes(top_processes):
 
         parts = [part.strip() for part in line.split("|")]
         if len(parts) == 3:
-            process_list.append({"name": parts[0], "cpu": parts[1], "memory": parts[2]})
+            try:
+                cpu_val = float(parts[1])
+                mem_val = float(parts[2])
+                process_list.append({"name": parts[0], "cpu": f"{cpu_val:.1f}%", "memory": f"{mem_val:.1f}MB"})
+            except (ValueError, IndexError):
+                process_list.append({"name": parts[0], "cpu": parts[1], "memory": parts[2]})
         elif len(parts) == 2:
             process_list.append({"name": parts[0], "cpu": "-", "memory": parts[1]})
         else:
@@ -171,7 +182,162 @@ def _render_error_page(request, template_name, status_code, title, message, acti
 
 
 def landing_page(request):
-    return render(request, "agents/landing.html")
+    from .models import SubscriptionPlan
+    plans = SubscriptionPlan.objects.filter(is_active=True).order_by("monthly_price_cents")
+    return render(request, "agents/landing.html", {"plans": plans})
+
+
+def client_trial_signup(request):
+    available_plans = SubscriptionPlan.objects.filter(is_active=True).order_by("monthly_price_cents")
+    if not available_plans.exists():
+        messages.error(request, "No trial plans are configured yet. Please contact support.")
+        return redirect("landing_page")
+
+    initial = {}
+    requested_plan_slug = (request.GET.get("plan") or "").strip()
+    if requested_plan_slug:
+        preselected_plan = available_plans.filter(slug=requested_plan_slug).first()
+        if preselected_plan:
+            initial["plan"] = preselected_plan
+
+    if request.method == "POST":
+        form = TrialSignupForm(request.POST)
+        if form.is_valid():
+            cleaned = form.cleaned_data
+            trial_end = timezone.now().date() + timedelta(days=30)
+
+            with transaction.atomic():
+                client = Client.objects.create(
+                    name=cleaned["company_name"],
+                    contact_email=cleaned["email"],
+                )
+
+                full_name_parts = cleaned["full_name"].split(maxsplit=1)
+                first_name = full_name_parts[0]
+                last_name = full_name_parts[1] if len(full_name_parts) > 1 else ""
+
+                user = User.objects.create_user(
+                    username=cleaned["username"],
+                    email=cleaned["email"],
+                    password=cleaned["password1"],
+                    first_name=first_name,
+                    last_name=last_name,
+                )
+
+                ClientAccess.objects.create(
+                    user=user,
+                    client=client,
+                    role=ClientAccess.ROLE_OWNER,
+                    can_restart_machines=True,
+                )
+
+                ClientSubscription.objects.create(
+                    client=client,
+                    plan=cleaned["plan"],
+                    status=ClientSubscription.STATUS_TRIALING,
+                    start_date=timezone.now().date(),
+                    trial_end=trial_end,
+                    current_period_end=trial_end,
+                    billing_email=cleaned["email"],
+                )
+
+            auth_login(request, user)
+            messages.success(
+                request,
+                "Your 30-day trial is active. Download the Windows agent and deploy it to your machines.",
+            )
+            return redirect("client_dashboard")
+    else:
+        form = TrialSignupForm(initial=initial)
+
+    return render(
+        request,
+        "agents/client_trial_signup.html",
+        {
+            "signup_form": form,
+            "available_plans": available_plans,
+        },
+    )
+
+
+@login_required(login_url="/client/login/")
+def client_download_agent(request):
+    access, redirect_response = _client_portal_access_or_redirect(request)
+    if redirect_response:
+        return redirect_response
+
+    agent_path = Path(getattr(settings, "AGENT_EXE_PATH", settings.BASE_DIR / "media" / "deployments" / "tj-rmm-agent.exe"))
+    if agent_path.exists() and agent_path.is_file():
+        safe_client_slug = "".join(ch if ch.isalnum() else "-" for ch in access.client.name.lower()).strip("-") or "client"
+        download_name = f"tj-rmm-agent-{safe_client_slug}.exe"
+        response = FileResponse(agent_path.open("rb"), as_attachment=True, filename=download_name)
+        return response
+
+    script_path = Path(getattr(settings, "AGENT_SCRIPT_PATH", settings.BASE_DIR / "media" / "deployments" / "tj-rmm-agent.ps1"))
+    if script_path.exists() and script_path.is_file():
+        safe_client_slug = "".join(ch if ch.isalnum() else "-" for ch in access.client.name.lower()).strip("-") or "client"
+        download_name = f"tj-rmm-agent-{safe_client_slug}.ps1"
+        messages.warning(
+            request,
+            "Installer EXE is not published yet. Downloading PowerShell agent script instead.",
+        )
+        response = FileResponse(script_path.open("rb"), as_attachment=True, filename=download_name)
+        return response
+
+    messages.error(
+        request,
+        "Agent installer is not available yet. Ask your administrator to publish tj-rmm-agent.exe.",
+    )
+    return redirect("client_dashboard")
+
+
+@login_required(login_url="/client/login/")
+def client_agent_connection_test(request):
+    if request.method != "POST":
+        return redirect("client_dashboard")
+
+    access, redirect_response = _client_portal_access_or_redirect(request)
+    if redirect_response:
+        return redirect_response
+
+    hub_url = (request.POST.get("hub_url") or "").strip()
+    if not hub_url:
+        base_url = (settings.CLIENT_PORTAL_BASE_URL or "http://127.0.0.1:8000").rstrip("/")
+        hub_url = f"{base_url}/api/hub/"
+
+    payload = {
+        "hostname": "client-connectivity-test",
+        "client": access.client.name,
+        "connectivity_test": True,
+    }
+
+    try:
+        request_data = json.dumps(payload).encode("utf-8")
+        test_request = Request(
+            hub_url,
+            data=request_data,
+            headers={
+                "Content-Type": "application/json",
+                "X-API-KEY": settings.AGENT_KEY,
+            },
+            method="POST",
+        )
+        with urlopen(test_request, timeout=8) as response:
+            status_code = getattr(response, "status", 200)
+            response_data = json.loads(response.read().decode("utf-8") or "{}")
+
+        if status_code == 200 and response_data.get("status") == "ok":
+            messages.success(request, f"Connection test passed for {hub_url}")
+        else:
+            messages.error(request, f"Connection test failed for {hub_url}")
+    except HTTPError as exc:
+        messages.error(request, f"Connection test failed: HTTP {exc.code} at {hub_url}")
+    except URLError as exc:
+        messages.error(request, f"Connection test failed: {exc.reason}")
+    except Exception as exc:
+        messages.error(request, "Connection test failed. Please verify the server URL and API key.")
+
+    return redirect("client_dashboard")
 
 
 def _latest_alerts(queryset, limit=8):
@@ -582,6 +748,44 @@ def dashboard(request):
     return render(request, "agents/dashboard.html", context)
 
 
+def technician_agent_installer(request):
+    access_response = _ensure_staff_dashboard_access(request)
+    if access_response:
+        return access_response
+
+    agent_path = Path(settings.AGENT_EXE_PATH)
+    published_installer = None
+    if agent_path.exists() and agent_path.is_file():
+        stat_info = agent_path.stat()
+        published_installer = {
+            "name": agent_path.name,
+            "size_mb": round(stat_info.st_size / (1024 * 1024), 2),
+            "updated_at": datetime.fromtimestamp(stat_info.st_mtime, timezone.get_current_timezone()),
+        }
+
+    if request.method == "POST":
+        form = AgentInstallerUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            installer = form.cleaned_data["installer"]
+            agent_path.parent.mkdir(parents=True, exist_ok=True)
+            with agent_path.open("wb+") as destination:
+                for chunk in installer.chunks():
+                    destination.write(chunk)
+
+            messages.success(request, "Agent installer uploaded and published successfully.")
+            return redirect("technician_agent_installer")
+    else:
+        form = AgentInstallerUploadForm()
+
+    context = {
+        "staff_client_access": _staff_client_access(request),
+        "upload_form": form,
+        "published_installer": published_installer,
+        "agent_exe_path": str(agent_path),
+    }
+    return render(request, "agents/technician_agent_installer.html", context)
+
+
 def technician_machines(request):
     access_response = _ensure_staff_dashboard_access(request)
     if access_response:
@@ -805,6 +1009,8 @@ def client_dashboard(request):
 
     context = {
         "client_access": access,
+        "subscription": access.client.current_subscription,
+        "default_agent_hub_url": ((settings.CLIENT_PORTAL_BASE_URL or "http://127.0.0.1:8000").rstrip("/") + "/api/hub/"),
         "machines": machines,
         "notification_count": _unread_notification_count(access),
         "total_online": sum(1 for machine in machines if machine.is_online()),
@@ -1051,6 +1257,29 @@ def client_submit_request(request):
         "request_form": form,
     }
     return render(request, "agents/client_service_requests.html", context)
+
+
+@login_required(login_url="/client/login/")
+def client_machine_detail(request, machine_id):
+    access, redirect_response = _client_portal_access_or_redirect(request)
+    if redirect_response:
+        return redirect_response
+
+    machine = get_object_or_404(Machine, id=machine_id, client=access.client)
+    _sync_machine_alerts(machine)
+    machine.process_list = _parse_processes(machine.top_processes)
+
+    context = {
+        "client_access": access,
+        "machine": machine,
+        "can_manage": access.can_manage_devices(),
+        "can_restart": access.can_restart(),
+        "recent_alerts": list(machine.alerts.order_by("status", "-created_at")[:8]),
+        "recent_requests": list(machine.service_requests.select_related("requester", "assigned_to").order_by("-updated_at")[:8]),
+        "recent_logs": list(machine.logs.all()[:15]),
+        "notification_count": _unread_notification_count(access),
+    }
+    return render(request, "agents/client_machine_detail.html", context)
 
 
 @login_required(login_url="/client/login/")
@@ -1573,6 +1802,9 @@ def communication_hub(request):
     data, error_response = _get_request_data(request)
     if error_response:
         return error_response
+
+    if data.get("connectivity_test"):
+        return JsonResponse({"status": "ok"})
 
     hostname = (data.get("hostname") or "").strip()
     if not hostname:
